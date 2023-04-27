@@ -51,7 +51,7 @@ const baseMaps = {
 
 //Ícone ponto
 const arvore = L.icon({
-  iconUrl: '../images/arvorezinha.png',
+  iconUrl: '../images/nao_fatais.png',
   iconSize: [25, 25],
   popupAnchor: [0, -10],
 });
