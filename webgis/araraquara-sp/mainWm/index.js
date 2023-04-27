@@ -13,14 +13,9 @@ const coracao = L.MakiMarkers.icon({
 lagoaSanta.src = coracao.options.iconUrl
 var mapboxAttribution =
   'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
+
 // Adiciona um tile Layer ao mapa
-const thunderLandscape = L.tileLayer(
-  `https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=${THUNDER_KEY}`,
-  {
-    attribution:
-      'Mapas &copy; OpenCycleMap, Dados do Mapa &copy; contribuidores do OpenStreetMap',
-  },
-);
+
 const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '© OpenStreetMap',
@@ -31,7 +26,7 @@ const satellite = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}
   subdomains:['mt0','mt1','mt2','mt3']
 });
 
-const tileLayers = [thunderLandscape, satellite, osm];
+const tileLayers = [osm];
 
 // Adiciona o mapa do leaflet à div mapa
 const map = L.map('mapa', {
@@ -39,19 +34,18 @@ const map = L.map('mapa', {
   center: INITIAL_VIEW.lagoa_santa,
   zoom: INITIAL_ZOOM,
 });
+
 const layers = {};
 // layers['Pontos'] = markersFromGEOJSON(null).addTo(map)
 layers['Pontos'] = clusteredPoints(markersFromGEOJSON(null)).addTo(map);
 
 const baseMaps = {
-  'Thunder - Landscape': thunderLandscape,
-  OpenStreetMaps: osm,
-  'Satelite': satellite
+  OpenStreetMaps: osm
 };
 
-//Ícone ponto
-const arvore = L.icon({
-  iconUrl: '../images/nao_fatais.png',
+//Ícones ponto
+const acidentes = L.icon({
+  iconUrl: '../images/acidentes.png',
   iconSize: [25, 25],
   popupAnchor: [0, -10],
 });
@@ -80,7 +74,11 @@ pointFilterSelect.onchange = ({ target }) => {
 
 function applyFilter(layer) {
   layers[layer].clearLayers();
+
+  //Associando os dados dos pontos ao filtro
   layers[layer].addData(pontos);
+  layers[layer].addData(p);
+
   return layers[layer];
 }
 
@@ -106,16 +104,15 @@ function filterToApply(element) {
   return f;
 }
 
-// Adicionando marcadores geojson
+
+//Função que transforma a camada de pontos para marcadores
+//Fonte: https://gis.stackexchange.com/questions/110402/changing-default-style-on-point-geojson-layer-in-leaflet 
 function pointToLayer(_feature, latlng) {
-  `Função que transforma a camada de pontos para marcadores
-  fonte: https://gis.stackexchange.com/questions/110402/changing-default-style-on-point-geojson-layer-in-leaflet 
-  `;
-  return L.marker(latlng, { icon: arvore });
+  return L.marker(latlng, { icon: acidentes });
 }
 
+//Função para adicionar pontos a partir de um GeoJSON
 function markersFromGEOJSON(markers) {
-  'Função para adicionar pontos a partir de um GeoJSON.';
   return new L.geoJson(markers, {
     onEachFeature: createPopup,
     pointToLayer,
@@ -141,9 +138,11 @@ function clusteredPoints(layer) {
   clusterPoints.checkIn(layer); // É aqui que a mágica acontece hahaha
   return layer;
 }
-// Criando grupos de marcadores (camadas)
 
+//Criando os pontos do mapa
 layers['Pontos'].addData(pontos);
+layers['Pontos'].addData(p);
+
 layers['Posicao Inicial'] = L.layerGroup([
   L.marker(INITIAL_VIEW.lagoa_santa, { icon: coracao }).bindPopup(
     'Ponto do IBGE de Lagoa Santa',
@@ -157,4 +156,4 @@ const layerControl = L.control
   .layers(baseMaps, layers, { collapsed: true })
   .addTo(map);
 
-//layerControl.addBaseLayer(satellite, 'Satélite');
+layerControl.addBaseLayer(satellite, 'Satélite');
