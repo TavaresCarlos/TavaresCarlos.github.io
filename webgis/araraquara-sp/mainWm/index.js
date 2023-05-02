@@ -1,7 +1,3 @@
-lagoaSanta = document.getElementById('cidade')
-
-//var map = L.map('mapa').setView([51.505, -0.09], 13);
-
 L.MakiMarkers.accessToken = MAPBOX_KEY;
 
 var mapboxAttribution =
