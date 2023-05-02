@@ -33,11 +33,6 @@ tr:nth-child(even) {
   background-color: #9ad4d4;
 }
 
-table{
-  border:solid black 2px;
-  overflow-y: scroll;
-}
-
 .container {
   align-items: stretch;
   background-color: #ebece8;

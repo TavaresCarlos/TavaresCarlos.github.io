@@ -1,16 +1,9 @@
-lagoaSanta = document.getElementById('lagoa-santa')
+lagoaSanta = document.getElementById('cidade')
 
 //var map = L.map('mapa').setView([51.505, -0.09], 13);
 
 L.MakiMarkers.accessToken = MAPBOX_KEY;
 
-// Criando icone com o plugin MakiMarkers
-const coracao = L.MakiMarkers.icon({
-  icon: 'heart',
-  color: 'red',
-  size: 'm',
-});
-lagoaSanta.src = coracao.options.iconUrl
 var mapboxAttribution =
   'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
 
@@ -31,7 +24,7 @@ const tileLayers = [osm];
 // Adiciona o mapa do leaflet à div mapa
 const map = L.map('mapa', {
   layers: tileLayers,
-  center: INITIAL_VIEW.lagoa_santa,
+  center: INITIAL_VIEW.cidade,
   zoom: INITIAL_ZOOM,
 });
 
@@ -143,13 +136,7 @@ function clusteredPoints(layer) {
 layers['Pontos'].addData(pontos);
 layers['Pontos'].addData(p);
 
-layers['Posicao Inicial'] = L.layerGroup([
-  L.marker(INITIAL_VIEW.lagoa_santa, { icon: coracao }).bindPopup(
-    'Ponto do IBGE de Lagoa Santa',
-  ),
-]).addTo(map);
-
-layers[municipio.name] = L.layerGroup(polygonFromGEOJSON(municipio.features));
+layers["Limite Municipal"] = L.layerGroup(polygonFromGEOJSON(municipio.features));
 
 //Controle de camadas
 const layerControl = L.control
